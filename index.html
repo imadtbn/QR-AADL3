@@ -45,13 +45,15 @@
     <input type="text" id="phone" placeholder="رقم الهاتف" required><br>
     <input type="email" id="email" placeholder="البريد الإلكتروني" required><br>
 
-    <button type="button" onclick="generateQR()">📄 توليد الكود</button>
+    <button type="button" onclick="generateQR()">📄 إنشاء الكود</button>
     <button type="button" onclick="saveQR()">💾 حفظ الكود</button>
   </form>
 
   <div id="qrcode"></div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <!-- ضع المكتبة محلياً أو تأكد أن هذا الرابط يعمل -->
+  <script src="qrcode.min.js"></script>
+
   <script>
     let qrcode;
 
@@ -77,7 +79,7 @@ Nom: ${name_lat}
 البريد: ${email}
       `;
 
-      document.getElementById("qrcode").innerHTML = ""; // تفريغ الكود القديم
+      document.getElementById("qrcode").innerHTML = ""; // تفريغ الكود السابق
 
       qrcode = new QRCode(document.getElementById("qrcode"), {
         text: data,
@@ -89,7 +91,7 @@ Nom: ${name_lat}
     function saveQR() {
       const img = document.querySelector("#qrcode img");
       if (!img) {
-        alert("يرجى توليد الكود أولاً");
+        alert("يرجى إنشاء الكود أولاً");
         return;
       }
 
