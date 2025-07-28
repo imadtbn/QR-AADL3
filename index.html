@@ -10,24 +10,32 @@
       padding: 20px;
       text-align: center;
     }
+
     input, button {
       display: block;
       margin: 10px auto;
       padding: 10px;
-      width: 80%;
+      width: 90%;
       max-width: 400px;
       font-size: 16px;
+      border-radius: 6px;
     }
+
     button {
       background-color: #28a745;
       color: white;
       border: none;
-      border-radius: 6px;
       cursor: pointer;
     }
+
     #qrcode {
-      margin-top: 30px;
+      margin-top: 20px;
+      padding: 10px;
+      background: white;
+      display: inline-block;
+      border: 1px solid #ccc;
     }
+
   </style>
 </head>
 <body>
@@ -46,27 +54,34 @@
 
   <div id="qrcode"></div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <!-- تحميل مكتبة توليد QR -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
   <script>
     let qr;
 
     function generateQR() {
-      const data = `
-الاسم بالعربية: ${document.getElementById("fullname_ar").value}
-الاسم باللاتينية: ${document.getElementById("fullname_en").value}
-رقم التعريف الوطني: ${document.getElementById("nid").value}
-رقم الاكتتاب: ${document.getElementById("subscription").value}
-رقم الهاتف: ${document.getElementById("phone").value}
-البريد الإلكتروني: ${document.getElementById("email").value}
-      `.trim();
+      const fullname_ar = document.getElementById("fullname_ar").value;
+      const fullname_en = document.getElementById("fullname_en").value;
+      const nid = document.getElementById("nid").value;
+      const subscription = document.getElementById("subscription").value;
+      const phone = document.getElementById("phone").value;
+      const email = document.getElementById("email").value;
 
-      // إعادة تعيين الكود السابق إن وُجد
-      document.getElementById("qrcode").innerHTML = "";
+      const qrData = `الاسم (ع): ${fullname_ar}
+الاسم (لات): ${fullname_en}
+رقم التعريف: ${nid}
+رقم الاكتتاب: ${subscription}
+الهاتف: ${phone}
+الإيميل: ${email}`;
 
-      qr = new QRCode(document.getElementById("qrcode"), {
-        text: data,
+      const qrcodeContainer = document.getElementById("qrcode");
+      qrcodeContainer.innerHTML = ""; // مسح أي كود سابق
+
+      qr = new QRCode(qrcodeContainer, {
+        text: qrData,
         width: 256,
-        height: 256
+        height: 256,
+        correctLevel: QRCode.CorrectLevel.H
       });
     }
 
@@ -78,7 +93,7 @@
         link.download = "qr_code.png";
         link.click();
       } else {
-        alert("يرجى توليد الكود أولاً.");
+        alert("الرجاء توليد الكود أولاً.");
       }
     }
   </script>
