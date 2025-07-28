@@ -2,84 +2,101 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>مولد كود QR</title>
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+  <title>إنشاء كود QR</title>
   <style>
     body {
-      font-family: Arial;
-      background-color: #f0fff0;
+      font-family: Arial, sans-serif;
+      background-color: #f4fdf4;
+      padding: 30px;
       text-align: center;
-      padding: 20px;
     }
     input {
+      margin: 10px;
       padding: 10px;
-      margin: 5px;
       width: 300px;
-      border-radius: 6px;
+      border-radius: 8px;
       border: 1px solid #ccc;
+      font-size: 16px;
     }
     button {
-      padding: 10px 20px;
       margin: 10px;
-      background-color: #28a745;
-      color: white;
-      border: none;
+      padding: 10px 20px;
       border-radius: 8px;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      font-size: 16px;
       cursor: pointer;
     }
     #qrcode {
-      margin-top: 20px;
+      margin-top: 30px;
     }
   </style>
 </head>
 <body>
 
-  <h2>✏️ أدخل بياناتك لإنشاء كود QR</h2>
+  <h2>🔲 إنشاء كود QR للمعلومات</h2>
 
-  <input type="text" id="fullname" placeholder="الاسم الكامل"><br>
-  <input type="text" id="level" placeholder="المستوى الدراسي"><br>
-  <input type="text" id="group" placeholder="الشعبة / التخصص"><br>
-  <input type="text" id="phone" placeholder="رقم الهاتف"><br>
-  <input type="email" id="email" placeholder="البريد الإلكتروني"><br>
+  <form id="qrForm">
+    <input type="text" id="name_ar" placeholder="الاسم الكامل (بالعربية)" required><br>
+    <input type="text" id="name_lat" placeholder="الاسم الكامل (باللاتينية)" required><br>
+    <input type="text" id="nid" placeholder="رقم التعريف الوطني" required><br>
+    <input type="text" id="subscription" placeholder="رقم المكتتب" required><br>
+    <input type="text" id="phone" placeholder="رقم الهاتف" required><br>
+    <input type="email" id="email" placeholder="البريد الإلكتروني" required><br>
 
-  <button onclick="generateQR()">📌 إنشاء الكود</button>
-  <button onclick="downloadQR()">💾 حفظ الكود كصورة</button>
+    <button type="button" onclick="generateQR()">📄 توليد الكود</button>
+    <button type="button" onclick="saveQR()">💾 حفظ الكود</button>
+  </form>
 
   <div id="qrcode"></div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script>
     let qrcode;
 
     function generateQR() {
-      const fullname = document.getElementById("fullname").value;
-      const level = document.getElementById("level").value;
-      const group = document.getElementById("group").value;
-      const phone = document.getElementById("phone").value;
-      const email = document.getElementById("email").value;
+      const name_ar = document.getElementById("name_ar").value.trim();
+      const name_lat = document.getElementById("name_lat").value.trim();
+      const nid = document.getElementById("nid").value.trim();
+      const subscription = document.getElementById("subscription").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const email = document.getElementById("email").value.trim();
 
-      const qrData = `الاسم: ${fullname}\nالمستوى: ${level}\nالشعبة: ${group}\nالهاتف: ${phone}\nالإيميل: ${email}`;
+      if (!name_ar || !name_lat || !nid || !subscription || !phone || !email) {
+        alert("يرجى ملء جميع الحقول");
+        return;
+      }
 
-      // إزالة الكود السابق (إن وُجد)
-      document.getElementById("qrcode").innerHTML = "";
+      const data = `
+الاسم: ${name_ar}
+Nom: ${name_lat}
+رقم التعريف: ${nid}
+رقم المكتتب: ${subscription}
+رقم الهاتف: ${phone}
+البريد: ${email}
+      `;
+
+      document.getElementById("qrcode").innerHTML = ""; // تفريغ الكود القديم
 
       qrcode = new QRCode(document.getElementById("qrcode"), {
-        text: qrData,
+        text: data,
         width: 200,
-        height: 200,
-        correctLevel: QRCode.CorrectLevel.H
+        height: 200
       });
     }
 
-    function downloadQR() {
-      const img = document.querySelector('#qrcode img');
-      if (img) {
-        const link = document.createElement('a');
-        link.href = img.src;
-        link.download = 'qr_code.png';
-        link.click();
-      } else {
+    function saveQR() {
+      const img = document.querySelector("#qrcode img");
+      if (!img) {
         alert("يرجى توليد الكود أولاً");
+        return;
       }
+
+      const link = document.createElement("a");
+      link.href = img.src;
+      link.download = "qr_code.png";
+      link.click();
     }
   </script>
 
