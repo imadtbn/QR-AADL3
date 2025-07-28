@@ -35,6 +35,11 @@
       display: inline-block;
       border: 1px solid #ccc;
     }
+
+    .error {
+      color: red;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -48,26 +53,37 @@
   <input type="text" id="phone" placeholder="رقم الهاتف">
   <input type="email" id="email" placeholder="البريد الإلكتروني">
 
-  <button id="generateBtn">📇 توليد الكود</button>
+  <div class="error" id="errorMsg"></div>
+
+  <button onclick="generateQR()">📇 توليد الكود</button>
   <button onclick="saveQR()">💾 حفظ الكود كصورة</button>
 
   <div id="qrcode"></div>
 
-  <!-- مكتبة QRCode -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <!-- مكتبة QR Code مضمونة -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script>
-    let qrCodeInstance;
+    let qr;
 
-    document.getElementById('generateBtn').addEventListener('click', function () {
+    function generateQR() {
       const fullname_ar = document.getElementById("fullname_ar").value.trim();
       const fullname_en = document.getElementById("fullname_en").value.trim();
       const nid = document.getElementById("nid").value.trim();
       const subscription = document.getElementById("subscription").value.trim();
       const phone = document.getElementById("phone").value.trim();
       const email = document.getElementById("email").value.trim();
+      const errorMsg = document.getElementById("errorMsg");
 
-      const data = `الاسم بالعربية: ${fullname_ar}
-الاسم باللاتينية: ${fullname_en}
+      // التحقق من الحقول
+      if (!fullname_ar || !fullname_en || !nid || !subscription || !phone || !email) {
+        errorMsg.textContent = "⚠️ يرجى تعبئة جميع الحقول قبل توليد الكود.";
+        return;
+      }
+
+      errorMsg.textContent = ""; // مسح الرسالة السابقة
+
+      const data = `الاسم (ع): ${fullname_ar}
+الاسم (لات): ${fullname_en}
 رقم التعريف الوطني: ${nid}
 رقم الاكتتاب: ${subscription}
 رقم الهاتف: ${phone}
@@ -76,13 +92,13 @@
       const qrContainer = document.getElementById("qrcode");
       qrContainer.innerHTML = ""; // مسح الكود السابق
 
-      qrCodeInstance = new QRCode(qrContainer, {
+      qr = new QRCode(qrContainer, {
         text: data,
         width: 250,
         height: 250,
         correctLevel: QRCode.CorrectLevel.H
       });
-    });
+    }
 
     function saveQR() {
       const img = document.querySelector("#qrcode img");
