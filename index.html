@@ -3,112 +3,82 @@
 <head>
   <meta charset="UTF-8">
   <title>مولد كود QR</title>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: Arial;
       background-color: #f0fff0;
-      padding: 20px;
       text-align: center;
+      padding: 20px;
     }
-
-    input, button {
-      display: block;
-      margin: 10px auto;
+    input {
       padding: 10px;
-      width: 90%;
-      max-width: 400px;
-      font-size: 16px;
+      margin: 5px;
+      width: 300px;
       border-radius: 6px;
+      border: 1px solid #ccc;
     }
-
     button {
+      padding: 10px 20px;
+      margin: 10px;
       background-color: #28a745;
       color: white;
       border: none;
+      border-radius: 8px;
       cursor: pointer;
     }
-
     #qrcode {
       margin-top: 20px;
-      padding: 10px;
-      background: white;
-      display: inline-block;
-      border: 1px solid #ccc;
-    }
-
-    .error {
-      color: red;
-      font-weight: bold;
     }
   </style>
 </head>
 <body>
 
-  <h2>🔐 توليد كود QR للمعلومات</h2>
+  <h2>✏️ أدخل بياناتك لإنشاء كود QR</h2>
 
-  <input type="text" id="fullname_ar" placeholder="الاسم الكامل بالعربية">
-  <input type="text" id="fullname_en" placeholder="الاسم الكامل باللاتينية">
-  <input type="text" id="nid" placeholder="رقم التعريف الوطني">
-  <input type="text" id="subscription" placeholder="رقم الاكتتاب">
-  <input type="text" id="phone" placeholder="رقم الهاتف">
-  <input type="email" id="email" placeholder="البريد الإلكتروني">
+  <input type="text" id="fullname" placeholder="الاسم الكامل"><br>
+  <input type="text" id="level" placeholder="المستوى الدراسي"><br>
+  <input type="text" id="group" placeholder="الشعبة / التخصص"><br>
+  <input type="text" id="phone" placeholder="رقم الهاتف"><br>
+  <input type="email" id="email" placeholder="البريد الإلكتروني"><br>
 
-  <div class="error" id="errorMsg"></div>
-
-  <button onclick="generateQR()">📇 توليد الكود</button>
-  <button onclick="saveQR()">💾 حفظ الكود كصورة</button>
+  <button onclick="generateQR()">📌 إنشاء الكود</button>
+  <button onclick="downloadQR()">💾 حفظ الكود كصورة</button>
 
   <div id="qrcode"></div>
 
-  <!-- مكتبة QR Code مضمونة -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script>
-    let qr;
+    let qrcode;
 
     function generateQR() {
-      const fullname_ar = document.getElementById("fullname_ar").value.trim();
-      const fullname_en = document.getElementById("fullname_en").value.trim();
-      const nid = document.getElementById("nid").value.trim();
-      const subscription = document.getElementById("subscription").value.trim();
-      const phone = document.getElementById("phone").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const errorMsg = document.getElementById("errorMsg");
+      const fullname = document.getElementById("fullname").value;
+      const level = document.getElementById("level").value;
+      const group = document.getElementById("group").value;
+      const phone = document.getElementById("phone").value;
+      const email = document.getElementById("email").value;
 
-      // التحقق من الحقول
-      if (!fullname_ar || !fullname_en || !nid || !subscription || !phone || !email) {
-        errorMsg.textContent = "⚠️ يرجى تعبئة جميع الحقول قبل توليد الكود.";
-        return;
-      }
+      const qrData = `الاسم: ${fullname}\nالمستوى: ${level}\nالشعبة: ${group}\nالهاتف: ${phone}\nالإيميل: ${email}`;
 
-      errorMsg.textContent = ""; // مسح الرسالة السابقة
+      // إزالة الكود السابق (إن وُجد)
+      document.getElementById("qrcode").innerHTML = "";
 
-      const data = `الاسم (ع): ${fullname_ar}
-الاسم (لات): ${fullname_en}
-رقم التعريف الوطني: ${nid}
-رقم الاكتتاب: ${subscription}
-رقم الهاتف: ${phone}
-البريد الإلكتروني: ${email}`;
-
-      const qrContainer = document.getElementById("qrcode");
-      qrContainer.innerHTML = ""; // مسح الكود السابق
-
-      qr = new QRCode(qrContainer, {
-        text: data,
-        width: 250,
-        height: 250,
+      qrcode = new QRCode(document.getElementById("qrcode"), {
+        text: qrData,
+        width: 200,
+        height: 200,
         correctLevel: QRCode.CorrectLevel.H
       });
     }
 
-    function saveQR() {
-      const img = document.querySelector("#qrcode img");
+    function downloadQR() {
+      const img = document.querySelector('#qrcode img');
       if (img) {
-        const link = document.createElement("a");
+        const link = document.createElement('a');
         link.href = img.src;
-        link.download = "qr_code.png";
+        link.download = 'qr_code.png';
         link.click();
       } else {
-        alert("يرجى توليد الكود أولاً.");
+        alert("يرجى توليد الكود أولاً");
       }
     }
   </script>
