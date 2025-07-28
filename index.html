@@ -45,17 +45,15 @@
     <input type="text" id="phone" placeholder="رقم الهاتف" required><br>
     <input type="email" id="email" placeholder="البريد الإلكتروني" required><br>
 
-    <button type="button" onclick="generateQR()">📄 إنشاء الكود</button>
+    <button type="button" onclick="generateQR()">📄 توليد الكود</button>
     <button type="button" onclick="saveQR()">💾 حفظ الكود</button>
   </form>
 
   <div id="qrcode"></div>
 
-  <!-- ضع المكتبة محلياً أو تأكد أن هذا الرابط يعمل -->
-  <script src="qrcode.min.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
   <script>
-    let qrcode;
+    let currentQR;
 
     function generateQR() {
       const name_ar = document.getElementById("name_ar").value.trim();
@@ -70,28 +68,30 @@
         return;
       }
 
-      const data = `
-الاسم: ${name_ar}
-Nom: ${name_lat}
-رقم التعريف: ${nid}
-رقم المكتتب: ${subscription}
-رقم الهاتف: ${phone}
-البريد: ${email}
-      `;
+      const data = `الاسم: ${name_ar}\nNom: ${name_lat}\nرقم التعريف: ${nid}\nرقم المكتتب: ${subscription}\nرقم الهاتف: ${phone}\nالبريد: ${email}`;
 
-      document.getElementById("qrcode").innerHTML = ""; // تفريغ الكود السابق
+      const qrContainer = document.getElementById("qrcode");
+      qrContainer.innerHTML = ""; // تنظيف
 
-      qrcode = new QRCode(document.getElementById("qrcode"), {
-        text: data,
-        width: 200,
-        height: 200
+      QRCode.toDataURL(data, { width: 256, margin: 2 }, function (err, url) {
+        if (err) {
+          console.error(err);
+          alert("حدث خطأ أثناء توليد الكود");
+          return;
+        }
+
+        const img = document.createElement("img");
+        img.src = url;
+        img.alt = "QR Code";
+        img.id = "qrImage";
+        qrContainer.appendChild(img);
       });
     }
 
     function saveQR() {
-      const img = document.querySelector("#qrcode img");
+      const img = document.getElementById("qrImage");
       if (!img) {
-        alert("يرجى إنشاء الكود أولاً");
+        alert("يرجى توليد الكود أولاً");
         return;
       }
 
