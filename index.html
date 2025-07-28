@@ -6,37 +6,25 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #e9f5e9;
-      text-align: center;
+      background-color: #f0fff0;
       padding: 20px;
+      text-align: center;
     }
-
-    label {
+    input, button {
       display: block;
-      margin: 10px 0 5px;
-      font-weight: bold;
-    }
-
-    input {
+      margin: 10px auto;
       padding: 10px;
       width: 80%;
       max-width: 400px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      text-align: right;
-    }
-
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background-color: #4caf50;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
       font-size: 16px;
     }
-
+    button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
     #qrcode {
       margin-top: 30px;
     }
@@ -44,59 +32,41 @@
 </head>
 <body>
 
-  <h1>🔐 مولد كود QR</h1>
+  <h2>🔐 توليد كود QR للمعلومات</h2>
 
-  <label for="fullname_ar">الاسم الكامل (بالعربية)</label>
-  <input type="text" id="fullname_ar" placeholder="أدخل الاسم الكامل بالعربية">
-
-  <label for="fullname_en">الاسم الكامل (باللاتينية)</label>
-  <input type="text" id="fullname_en" placeholder="أدخل الاسم الكامل باللاتينية">
-
-  <label for="nid">رقم التعريف الوطني</label>
-  <input type="text" id="nid" placeholder="أدخل رقم التعريف الوطني">
-
-  <label for="subscription">رقم الاكتتاب</label>
-  <input type="text" id="subscription" placeholder="أدخل رقم الاكتتاب">
-
-  <label for="phone">رقم الهاتف</label>
-  <input type="text" id="phone" placeholder="أدخل رقم الهاتف">
-
-  <label for="email">البريد الإلكتروني</label>
-  <input type="email" id="email" placeholder="أدخل البريد الإلكتروني">
+  <input type="text" id="fullname_ar" placeholder="الاسم الكامل بالعربية">
+  <input type="text" id="fullname_en" placeholder="الاسم الكامل باللاتينية">
+  <input type="text" id="nid" placeholder="رقم التعريف الوطني">
+  <input type="text" id="subscription" placeholder="رقم الاكتتاب">
+  <input type="text" id="phone" placeholder="رقم الهاتف">
+  <input type="email" id="email" placeholder="البريد الإلكتروني">
 
   <button onclick="generateQR()">📇 توليد الكود</button>
-  <button onclick="saveQR()">💾 حفظ الكود</button>
+  <button onclick="saveQR()">💾 حفظ الكود كصورة</button>
 
   <div id="qrcode"></div>
 
-  <!-- مكتبة QR Code -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script>
     let qr;
 
     function generateQR() {
-      const fullname_ar = document.getElementById("fullname_ar").value.trim();
-      const fullname_en = document.getElementById("fullname_en").value.trim();
-      const nid = document.getElementById("nid").value.trim();
-      const subscription = document.getElementById("subscription").value.trim();
-      const phone = document.getElementById("phone").value.trim();
-      const email = document.getElementById("email").value.trim();
-
-      const qrData = `
-الاسم الكامل (بالعربية): ${fullname_ar}
-الاسم الكامل (باللاتينية): ${fullname_en}
-رقم التعريف الوطني: ${nid}
-رقم الاكتتاب: ${subscription}
-رقم الهاتف: ${phone}
-البريد الإلكتروني: ${email}
+      const data = `
+الاسم بالعربية: ${document.getElementById("fullname_ar").value}
+الاسم باللاتينية: ${document.getElementById("fullname_en").value}
+رقم التعريف الوطني: ${document.getElementById("nid").value}
+رقم الاكتتاب: ${document.getElementById("subscription").value}
+رقم الهاتف: ${document.getElementById("phone").value}
+البريد الإلكتروني: ${document.getElementById("email").value}
       `.trim();
 
-      document.getElementById("qrcode").innerHTML = ""; // إعادة تعيين
+      // إعادة تعيين الكود السابق إن وُجد
+      document.getElementById("qrcode").innerHTML = "";
 
       qr = new QRCode(document.getElementById("qrcode"), {
-        text: qrData,
-        width: 250,
-        height: 250
+        text: data,
+        width: 256,
+        height: 256
       });
     }
 
@@ -112,5 +82,6 @@
       }
     }
   </script>
+
 </body>
 </html>
